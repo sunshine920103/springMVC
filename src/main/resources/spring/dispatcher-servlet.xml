@@ -22,15 +22,16 @@
     <context:component-scan base-package="cc.study.springmvc.controller"/>-->
 
 
-    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="propertyConfigurer" class="cc.study.springmvc.util.EncryptPropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath*:properties/*.properties</value>
             </list>
         </property>
-    </bean>-->
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>
 
-    <context:property-placeholder location="classpath:properties/*.properties" file-encoding="utf-8"/>
+    <!--<context:property-placeholder location="classpath:properties/*.properties" file-encoding="utf-8"/>-->
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>

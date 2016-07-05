@@ -38,7 +38,6 @@ public class HelloWorldController {
         User user=userService.findUserByUserName(username);
         if(hasMatchUser)
         {
-
             modelMap.put("user", user);
             SearchResponse response = es_client.getTransportClient().prepareSearch("razor_web_access")
                     .setTypes("access")
