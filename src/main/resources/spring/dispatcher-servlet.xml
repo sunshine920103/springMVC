@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!-- 通过mvc:resources设置静态资源，这样servlet就会处理这些静态资源，而不通过控制器 -->
+    <!-- 设置不过滤内容，比如:css,jquery,img 等资源文件 -->
+    <!--   <mvc:resources location="/*.html" mapping="/**.html" />
+       <mvc:resources location="/css/*" mapping="/css/**" />
+       <mvc:resources location="/js/*" mapping="/js/**" />
+       <mvc:resources location="/images/*" mapping="/images/**" />-->
+
+    <!-- 添加注解驱动 -->
+    <mvc:annotation-driven />
+    <!-- 默认扫描的包路径 -->
+    <context:component-scan base-package="cc.study.springmvc.*"/>
+    <!--<context:component-scan base-package="cc.study.springmvc.service"/>
+    <context:component-scan base-package="cc.study.springmvc.controller"/>-->
+
+
+    <!--<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:properties/*.properties</value>
+            </list>
+        </property>
+    </bean>-->
+
+    <context:property-placeholder location="classpath:properties/*.properties" file-encoding="utf-8"/>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.userName}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!-- 连接池启动时的初始值 -->
+        <property name="initialSize" value="${initialSize}" />
+        <!-- 连接池的最大值 -->
+        <property name="maxActive" value="${maxActive}" />
+        <!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 -->
+        <property name="maxIdle" value="${maxIdle}" />
+        <!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+        <property name="minIdle" value="${minIdle}" />
+        <!-- end -->
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" >
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="serviceMethod" expression="execution(* cc.study.springmvc.service..*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
+    </aop:config>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+
+    <!-- mvc:view-controller可以在不需要Controller处理request的情况，转向到设置的View -->
+    <!-- 像下面这样设置，如果请求为/，则不通过controller，而直接解析为/index.jsp -->
+    <mvc:view-controller path="/" view-name="index" />
+    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+        <!-- 配置jsp路径前缀 -->
+        <property name="prefix" value="/"></property>
+        <!-- 配置URl后缀 -->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+</beans>
