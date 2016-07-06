@@ -17,6 +17,7 @@
     <aspect.version>1.5.4</aspect.version>
     <ojdbc.version>11.2.0.1.0</ojdbc.version>
     <jstl.version>1.2</jstl.version>
+    <servlet.version>3.1.0</servlet.version>
   </properties>
   <dependencies>
 
@@ -85,8 +86,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <scope>test</scope>
+      <version>${servlet.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

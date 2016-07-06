@@ -22,6 +22,15 @@
     <context:component-scan base-package="cc.study.springmvc.controller"/>-->
 
 
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+                <value>messages.message-source</value>
+        </property>
+        <!--cacheSeconds为刷新资源文件周期，秒为单位，默认值为-1表示永不刷新。一般设置不小于30分钟-->
+        <!--<property name="cacheSeconds" value="-1"/>-->
+    </bean>
+
+
     <bean id="propertyConfigurer" class="cc.study.springmvc.util.EncryptPropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
@@ -80,5 +89,18 @@
         <!-- 配置URl后缀 -->
         <property name="suffix" value=".jsp"></property>
     </bean>
+
+
+    <mvc:interceptors>
+        <!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+        <mvc:interceptor>
+            <mvc:mapping path="/lang" />
+            <bean class="cc.study.springmvc.util.LanguageInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
 
 </beans>

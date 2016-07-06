@@ -8,7 +8,10 @@
     <title>欢迎</title>
 </head>
 <body>
-<h2>Hello World!${user.userName}</h2>
+
+<a href="/lang?langType=zh">中文</a>
+<a href="/lang?langType=en">英文</a>
+<h2>Hello World!${user.userName},${error}</h2>
 
 <form action="login" method="post">
     用户名：<input id="username" name="username" type="text" /><br>

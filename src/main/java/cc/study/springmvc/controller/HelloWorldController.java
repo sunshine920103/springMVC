@@ -1,17 +1,16 @@
 package cc.study.springmvc.controller;
 
-import cc.study.springmvc.domain.User;
 import cc.study.springmvc.service.UserService;
 import cc.study.springmvc.util.Es_Client;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.support.RequestContext;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * TODO 控制层代码
@@ -32,9 +31,11 @@ public class HelloWorldController {
     /*@ResponseBody*/
     public  String hello(
             @RequestParam(value = "username", required = false)String username,
-            String password,ModelMap modelMap)
+            String password,ModelMap modelMap, HttpServletRequest request)
     {
-        boolean hasMatchUser=userService.hasMatchUser(username,password);
+        RequestContext requestContext=new RequestContext(request);
+        modelMap.put("error", requestContext.getMessage("error"));
+        /*boolean hasMatchUser=userService.hasMatchUser(username,password);
         User user=userService.findUserByUserName(username);
         if(hasMatchUser)
         {
@@ -49,9 +50,15 @@ public class HelloWorldController {
                     .execute()
                     .actionGet();
             return response.toString();
-        }
-        return "0";
+        }*/
+        return "index";
 
+    }
+
+    @RequestMapping(value = "lang",method = RequestMethod.GET)
+    public String lang()
+    {
+        return "index";
     }
 
 
